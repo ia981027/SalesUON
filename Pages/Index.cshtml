@@ -1,0 +1,22 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+<div class="csv-upload">
+<body>
+
+    <h3>Upload CSV File</h3>
+
+    <form method="post" enctype="multipart/form-data" action="/api/csv/upload"> 
+        <input type="file" name="file" accept=".csv" />
+        <button type="submit">Upload</button>
+    </form>
+
+</body>
+</div>
