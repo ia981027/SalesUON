@@ -113,6 +113,31 @@ namespace UONSales.Controllers
         }
 
 
+        // ... other code ...
+
+        [HttpDelete("sales/{vin}")]
+        public IActionResult DeleteSale(string vin)
+        {
+            Console.WriteLine($"Deleting sale with VIN: {vin}");
+
+            // 1. Find the sale record in your database based on the 'vin'
+            var filter = Builders<Sale>.Filter.Eq(s => s.VIN, vin);
+            Console.WriteLine($"Filter: {filter}");
+            var saleToDelete = _collection.Find(filter).FirstOrDefault();
+            Console.WriteLine($"Deleting: {filter} and {saleToDelete}");
+
+            if (saleToDelete == null)
+            {
+                return NotFound(); // Return 404 if the sale is not found
+            }
+
+            // 2. Delete the record from the database
+            _collection.DeleteOne(filter);
+
+            // 3. Return an appropriate response (e.g., 204 No Content)
+            return NoContent();
+        }
+
         [HttpPost("sales")] // Corrected route
         public IActionResult AddSale(Sale newSale)
         {
@@ -127,7 +152,7 @@ namespace UONSales.Controllers
             }
         }
 
-         [HttpGet("sales/summary/month")]
+        [HttpGet("sales/summary/month")]
         public IActionResult GetSalesSummaryByMonth()
         {
             try
