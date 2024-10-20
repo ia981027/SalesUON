@@ -5,9 +5,9 @@ namespace SalesUON.Models
 {
     public class Sale
     {
-        [Key]
         public string Make { get; set; }
         public string Model { get; set; }
+        [Key]
         public string VIN { get; set; }
         public DateTime SaleDate { get; set; }
     }
