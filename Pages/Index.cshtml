@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
@@ -7,7 +7,7 @@
 <div class="csv-upload">
     <h3>Upload CSV File</h3>
 
-    <form method="post" enctype="multipart/form-data" action="/api/csv/upload"> 
+    <form method="post" enctype="multipart/form-data" action="/api/csv/upload">
         <input type="file" name="file" accept=".csv" />
         <button type="submit">Upload</button>
     </form>
@@ -15,27 +15,171 @@
 
 <h3>Sales Data</h3>
 
+<button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addModal">
+    Add New Sale
+</button>
+
+<div class="mb-3">
+    <form method="get">
+        <div class="row">
+            <div class="col-md-3">
+                <input type="date" class="form-control" name="SaleDate" value="@(Model.SaleDate?.ToString("yyyy-MM-dd"))" />
+            </div>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="Make" placeholder="Make" value="@Model.Make" />
+            </div>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="Model" placeholder="Model" value="@Model.Model" />
+            </div>
+            <div class="col-md-2">
+                <input type="number" class="form-control" name="PageSize" placeholder="Page Size" value="@Model.PageSize" min="1"  data-bs-toggle="tooltip" data-bs-placement="top" title="Enter the number of records to display per page." />
+            </div>
+
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary mt-2">Apply</button>
+            </div>
+        </div>
+        
+        <a href="/Index" class="btn btn-secondary mt-2">Clear</a>
+    </form>
+</div>
+
 <table class="table">
     <thead>
         <tr>
-            <th>Make</th>
-            <th>Model</th>
-            <th>VIN</th>
-            <th>Sale Date</th>
+            <th>
+                <a href="/Index?page=1&pageSize=@Model.PageSize&Make=@Model.Make&Model=@Model.Model&sortBy=Make&sortOrder=@(Model.SortBy == "Make" && Model.SortOrder == "asc" ? "desc" : "asc")">
+                    Make
+                    @if (Model.SortBy == "Make")
+                    {
+                        <span class="@(Model.SortOrder == "asc" ? "oi oi-sort-ascending" : "oi oi-sort-descending")"></span>
+                    }
+                </a>
+            </th>
+            <th>
+                <a href="/Index?page=1&pageSize=@Model.PageSize&Make=@Model.Make&Model=@Model.Model&sortBy=Model&sortOrder=@(Model.SortBy == "Model" && Model.SortOrder == "asc" ? "desc" : "asc")">
+                    Model
+                    @if (Model.SortBy == "Model")
+                    {
+                        <span class="@(Model.SortOrder == "asc" ? "oi oi-sort-ascending" : "oi oi-sort-descending")"></span>
+                    }
+                </a>
+            </th>
+            <th>
+                <a href="/Index?page=1&pageSize=@Model.PageSize&Make=@Model.Make&Model=@Model.Model&sortBy=VIN&sortOrder=@(Model.SortBy == "VIN" && Model.SortOrder == "asc" ? "desc" : "asc")">
+                    VIN
+                    @if (Model.SortBy == "VIN")
+                    {
+                        <span class="@(Model.SortOrder == "asc" ? "oi oi-sort-ascending" : "oi oi-sort-descending")"></span>
+                    }
+                </a>
+            </th>
+            <th>
+                <a href="/Index?page=1&pageSize=@Model.PageSize&Make=@Model.Make&Model=@Model.Model&sortBy=SaleDate&sortOrder=@(Model.SortBy == "SaleDate" && Model.SortOrder == "asc" ? "desc" : "asc")">
+                    Sale Date
+                    @if (Model.SortBy == "SaleDate")
+                    {
+                        <span class="@(Model.SortOrder == "asc" ? "oi oi-sort-ascending" : "oi oi-sort-descending")"></span>
+                    }
+                </a>
+            </th>
+            <th>Actions</th>
         </tr>
     </thead>
-    <tbody>
+
+<tbody>
+    @if (Model.Sales != null)
+    {
         @foreach (var sale in Model.Sales)
         {
-            <tr>
-                <td>@sale.Make</td>
-                <td>@sale.Model</td>
-                <td>@sale.VIN</td>
-                <td>@sale.SaleDate</td>
-            </tr>
+            @if ((string.IsNullOrEmpty(Model.Make) || sale.Make.Contains(Model.Make, StringComparison.OrdinalIgnoreCase)) &&
+                 (string.IsNullOrEmpty(Model.Model) || sale.Model.Contains(Model.Model, StringComparison.OrdinalIgnoreCase)) &&
+                 (Model.SaleDate == null || sale.SaleDate.Date == Model.SaleDate.Value.Date)) 
+            {
+                <tr>
+                    <td>@sale.Make</td>
+                    <td>@sale.Model</td>
+                    <td>@sale.VIN</td>
+                    <td>@sale.SaleDate.ToShortDateString()</td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#editModal-@sale.VIN">
+                            Edit
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal-@sale.VIN">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
         }
-    </tbody>
-</table>
+    }
+</tbody>
 
-<a href="?page=@(Model.CurrentPage - 1)" class="btn btn-primary @(Model.CurrentPage <= 1 ? "disabled" : "")">Previous</a>
-<a href="?page=@(Model.CurrentPage + 1)" class="btn btn-primary">Next</a>
+</table>
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        @if (Model.CurrentPage > 1)
+        {
+            <li class="page-item">
+                <a class="page-link"
+                   asp-page="./Index"
+                   asp-route-currentPage="@(Model.CurrentPage - 1)"
+                   asp-route-pageSize="@Model.PageSize"
+                   asp-route-saleDate="@Model.SaleDate?.ToString("yyyy-MM-dd")"
+                   asp-route-make="@Model.Make"
+                   asp-route-model="@Model.Model">
+                    Previous
+                </a>
+            </li>
+        }
+
+        @if (Model.CurrentPage < Model.TotalPages)
+        {
+            <li class="page-item">
+                <a class="page-link"
+                   asp-page="./Index"
+                   asp-route-currentPage="@(Model.CurrentPage + 1)"
+                   asp-route-pageSize="@Model.PageSize"
+                   asp-route-saleDate="@Model.SaleDate?.ToString("yyyy-MM-dd")"
+                   asp-route-make="@Model.Make"
+                   asp-route-model="@Model.Model">
+                    Next
+                </a>
+            </li>
+        }
+    </ul>
+</nav>
+
+
+
+<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addModalLabel">Add    New Sale</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-page-handler="AddSale">
+                    <div class="mb-3">
+                        <label for="Make" class="form-label">Make</label>
+                        <input type="text" class="form-control" id="Make" name="Make" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Model" class="form-label">Model</label>
+                        <input type="text" class="form-control" id="Model" name="Model"    />
+                    </div>
+                    <div class="mb-3">
+                        <label for="VIN"    class="form-label">VIN</label>
+                        <input type="text" class="form-control" id="VIN" name="VIN" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="SaleDate"    class="form-label">Sale Date</label>
+                        <input type="date" class="form-control" id="SaleDate" name="SaleDate"    value="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
