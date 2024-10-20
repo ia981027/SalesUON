@@ -110,6 +110,53 @@
                         </button>
                     </td>
                 </tr>
+
+                <div class="modal fade" id="editModal-@sale.VIN" tabindex="-1" aria-labelledby="editModalLabel-@sale.VIN" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel-@sale.VIN">Edit    Sale</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="post" asp-page-handler="SaveSale">
+                                    <input type="hidden" name="VIN" value="@sale.VIN" />
+                                    <div class="mb-3">
+                                        <label for="Make" class="form-label">Make</label>
+                                        <input type="text" class="form-control" id="Make" name="Make" value="@sale.Make" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="Model" class="form-label">Model</label>
+                                        <input type="text" class="form-control" id="Model" name="Model"    value="@sale.Model" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="SaleDate" class="form-label">Sale Date</label>
+                                        <input type="date" class="form-control" id="SaleDate" name="SaleDate"    value="@sale.SaleDate.ToString("yyyy-MM-dd")" />
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="deleteModal-@sale.VIN" tabindex="-1" aria-labelledby="deleteModalLabel-@sale.VIN" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteModalLabel-@sale.VIN">Delete    Sale</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to delete this    sale?</p>
+                                <form method="post" asp-page-handler="DeleteSale">
+                                    <input type="hidden" name="VIN" value="@sale.VIN" />
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             }
         }
     }
