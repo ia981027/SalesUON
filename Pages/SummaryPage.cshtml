@@ -1,0 +1,97 @@
+@page
+@model SalesUON.Pages.SummaryModel
+@{
+    ViewData["Title"] = "Sales Summary";
+}
+
+<h2>Sales Summary</h2>
+
+<h3>By Month</h3>
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <th>Year</th>
+            <th>Month</th>
+            <th>Total Sales</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.MonthSummaryData != null)
+        {
+            @foreach (var item in Model.MonthSummaryData)
+            {
+                <tr>
+                    <td>@item.Year</td>
+                    <td>@item.Month</td>
+                    <td>@item.TotalSales</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<h3>By Year</h3>
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <th>Year</th>
+            <th>Total Sales</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.YearSummaryData != null)
+        {
+            @foreach (var item in Model.YearSummaryData)
+            {
+                <tr>
+                    <td>@item.Year</td>
+                    <td>@item.TotalSales</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<h3>By Make</h3>
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <th>Make</th>
+            <th>Total Sales</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.MakeSummaryData != null)
+        {
+            @foreach (var item in Model.MakeSummaryData)
+            {
+                <tr>
+                    <td>@item.Make</td>
+                    <td>@item.TotalSales</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<h3>By Model</h3>
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <th>Model</th>
+            <th>Total Sales</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.ModelSummaryData != null)
+        {
+            @foreach (var item in Model.ModelSummaryData)
+            {
+                <tr>
+                    <td>@item.Model</td>
+                    <td>@item.TotalSales</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
