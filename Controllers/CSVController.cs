@@ -113,14 +113,11 @@ namespace UONSales.Controllers
         }
 
 
-        // ... other code ...
 
         [HttpDelete("sales/{vin}")]
         public IActionResult DeleteSale(string vin)
         {
             Console.WriteLine($"Deleting sale with VIN: {vin}");
-
-            // 1. Find the sale record in your database based on the 'vin'
             var filter = Builders<Sale>.Filter.Eq(s => s.VIN, vin);
             Console.WriteLine($"Filter: {filter}");
             var saleToDelete = _collection.Find(filter).FirstOrDefault();
@@ -128,23 +125,21 @@ namespace UONSales.Controllers
 
             if (saleToDelete == null)
             {
-                return NotFound(); // Return 404 if the sale is not found
+                return NotFound();
             }
 
-            // 2. Delete the record from the database
             _collection.DeleteOne(filter);
 
-            // 3. Return an appropriate response (e.g., 204 No Content)
             return NoContent();
         }
 
-        [HttpPost("sales")] // Corrected route
+        [HttpPost("sales")]
         public IActionResult AddSale(Sale newSale)
         {
             try
             {
                 _collection.InsertOne(newSale);
-                return Ok(newSale); // Or return CreatedAtAction if you want to include the location of the new resource
+                return Ok(newSale);
             }
             catch (Exception ex)
             {
@@ -249,7 +244,7 @@ namespace UONSales.Controllers
             }
         }
 
-        // In CsvController.cs
+
         [HttpPut("sales/{vin}")]
         public IActionResult UpdateSale(string vin, Sale updatedSale)
         {
@@ -265,7 +260,7 @@ namespace UONSales.Controllers
 
                 if (result.ModifiedCount > 0)
                 {
-                    return Ok(); // Or return the updated sale object
+                    return Ok();
                 }
                 else
                 {
@@ -295,8 +290,8 @@ public class SaleDateMap : ClassMap<Sale>
                     CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
                     return date;
 
-                // If parsing fails, you can handle it differently (e.g., return a default value, throw an exception, or log the error)
-                return DateTime.MinValue; // Or handle the error as needed
+                // If parsing fails, return MinValue
+                return DateTime.MinValue;
             });
     }
 }

@@ -9,7 +9,7 @@ namespace SalesUON.Models
     {
         [BsonId] // Mark this property as the MongoDB _id field
         [BsonRepresentation(BsonType.ObjectId)] // Specify the data type for _id
-        public string Id { get; set; } // You can use 'string' for ObjectId
+        public string Id { get; set; } // use 'string' for ObjectId
 
         public string Make { get; set; }
         public string Model { get; set; }

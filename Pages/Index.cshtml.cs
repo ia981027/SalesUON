@@ -11,7 +11,7 @@ namespace SalesUON.Pages
         private readonly ILogger<IndexModel> _logger;
         private readonly HttpClient _http;
 
-        public Sale? EditingSale { get; set; } // Property to store the sale being edited
+        public Sale? EditingSale { get; set; }
         public DateTime? SaleDate { get; set; }
         public string Make { get; set; }
         public string Model { get; set; }
@@ -23,19 +23,18 @@ namespace SalesUON.Pages
         public int PageSize = 50;
         public void OnGetShowEditForm(string vin)
         {
-            if (Sales != null) // Check if Sales is not null
+            if (Sales != null)
             {
                 EditingSale = Sales.FirstOrDefault(s => s.VIN == vin);
             }
             else
             {
-                // Handle the case where Sales is null, e.g., redirect to an error page,
-                // display an error message, or set EditingSale to a default value.
-                EditingSale = new Sale(); // Or handle it as appropriate for your application
+
+                EditingSale = new Sale();
             }
         }
 
-        public void OnGetHideEditForm() // Handler for hiding the edit form
+        public void OnGetHideEditForm()
         {
             EditingSale = null;
         }
@@ -75,7 +74,7 @@ namespace SalesUON.Pages
             }
         }
 
-        public async Task<IActionResult> OnPostSaveSaleAsync() // Handler for saving the sale
+        public async Task<IActionResult> OnPostSaveSaleAsync()
         {
             // 1. Get the updated data from the form
             var updatedSale = new Sale
